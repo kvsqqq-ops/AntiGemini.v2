@@ -1,0 +1,461 @@
+ <!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>antiGemini // Terminal</title>
+
+    <style>
+
+        :root {
+
+            --bg: #050505;
+
+            --panel: #0a0a0a;
+
+            --accent: #ff0000;
+
+            --text: #d1d1d1;
+
+            --border: #1a1a1a;
+
+        }
+
+
+        body {
+
+            background-color: var(--bg);
+
+            color: var(--text);
+
+            font-family: 'Consolas', 'Monaco', monospace;
+
+            margin: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            height: 100vh;
+
+            overflow: hidden;
+
+        }
+
+
+        header {
+
+            padding: 15px 25px;
+
+            border-bottom: 1px solid var(--accent);
+
+            background: var(--panel);
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            z-index: 10;
+
+        }
+
+
+        .brand { color: var(--accent); font-weight: bold; letter-spacing: 3px; }
+
+        .status { font-size: 10px; color: #444; }
+
+
+        #chat-window {
+
+            flex: 1;
+
+            overflow-y: auto;
+
+            padding: 30px 15%;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 25px;
+
+        }
+
+
+        .msg { display: flex; flex-direction: column; }
+
+        .msg.user { align-self: flex-end; width: 80%; }
+
+        .msg.ai { align-self: flex-start; width: 80%; }
+
+
+        .meta { font-size: 10px; margin-bottom: 6px; color: #555; text-transform: uppercase; }
+
+        .user .meta { text-align: right; }
+
+
+        .content { 
+
+            line-height: 1.6; 
+
+            font-size: 14px; 
+
+            padding: 10px 0;
+
+            /* Важно для сохранения структуры текста */
+
+            white-space: pre-wrap; 
+
+            word-wrap: break-word;
+
+            word-break: break-word;
+
+        }
+
+
+        .ai .content { color: var(--text); border-left: 2px solid var(--accent); padding-left: 20px; }
+
+        .user .content { color: #666; text-align: right; padding-right: 20px; }
+
+/* --- АДАПТИВ ПОД ТЕЛЕФОНЫ --- */
+        @media (max-width: 768px) {
+            #chat-window {
+                padding: 20px 15px; /* Убираем огромные отступы 15% */
+                gap: 15px;
+            }
+
+            .msg.user, .msg.ai {
+                width: 95%; /* Расширяем сообщения почти на весь экран */
+            }
+
+            footer {
+                padding: 15px; /* Уменьшаем отступы у поля ввода */
+            }
+
+            .content {
+                font-size: 13px; /* Чуть уменьшаем шрифт для компактности */
+            }
+
+            header {
+                padding: 10px 15px;
+            }
+
+            .brand {
+                font-size: 14px;
+                letter-spacing: 1px;
+            }
+
+            /* Делаем кнопки побольше для удобного нажатия пальцем */
+            button {
+                padding: 0 15px;
+                font-size: 12px;
+            }
+        }
+
+        /* --- АНИМАЦИЯ БУКВ --- */
+
+        @keyframes letterAppear {
+
+            from {
+
+                opacity: 0;
+
+                transform: translateY(var(--offset));
+
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform: translateY(0);
+
+            }
+
+        }
+
+
+        .letter {
+
+            display: inline-block;
+
+            /* Чтобы пробелы не схлопывались в одну точку */
+
+            white-space: pre; 
+
+            animation-fill-mode: forwards;
+
+            vertical-align: top;
+
+        }
+
+
+        .user .letter {
+
+            --offset: 15px;
+
+            animation: letterAppear 0.3s ease forwards;
+
+        }
+
+
+        .ai .letter {
+
+            --offset: 17px;
+
+            animation: letterAppear 0.5s ease forwards;
+
+        }
+
+
+        footer { padding: 30px 15%; }
+
+        .input-wrap {
+
+            display: flex;
+
+            background: #000;
+
+            border: 1px solid var(--border);
+
+            padding: 5px;
+
+        }
+
+
+        input {
+
+            flex: 1;
+
+            background: transparent;
+
+            border: none;
+
+            color: var(--accent);
+
+            padding: 12px;
+
+            outline: none;
+
+            font-family: inherit;
+
+        }
+
+
+        button {
+
+            background: transparent;
+
+            color: var(--accent);
+
+            border: 1px solid var(--accent);
+
+            cursor: pointer;
+
+            padding: 0 20px;
+
+            font-weight: bold;
+
+            transition: 0.2s;
+
+        }
+
+
+        button:hover { background: var(--accent); color: #000; }
+
+        button:disabled { opacity: 0.2; }
+
+
+        ::-webkit-scrollbar { width: 3px; }
+
+        ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<header>
+
+    <div class="brand">ANTI-GEMINI</div>
+
+    <div class="status">Made by @mban153</div>
+
+</header>
+
+
+<div id="chat-window"></div>
+
+
+<footer>
+
+    <div class="input-wrap">
+
+        <input type="text" id="user-input" placeholder="Enter prompt..." autocomplete="off">
+
+        <button id="send-btn" onclick="send()">Process</button>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+    const input = document.getElementById('user-input');
+
+    const chat = document.getElementById('chat-window');
+
+    const btn = document.getElementById('send-btn');
+
+
+    // Создаем элемент буквы или перенос строки
+
+    function createLetterElement(char) {
+
+        if (char === '\n') {
+
+            return document.createElement('br');
+
+        }
+
+        const span = document.createElement('span');
+
+        span.className = 'letter';
+
+        span.textContent = char;
+
+        return span;
+
+    }
+
+
+    // Добавляем текст с учетом переносов
+
+    function appendTextSmoothly(container, text) {
+
+        for (let char of text) {
+
+            container.appendChild(createLetterElement(char));
+
+        }
+
+    }
+
+
+    async function send() {
+
+        const text = input.value.trim();
+
+        if (!text) return;
+
+
+        input.value = '';
+
+        input.disabled = true;
+
+        btn.disabled = true;
+
+
+        // Ваше сообщение
+
+        const userMsgDiv = appendMessage('user', 'YOU');
+
+        const userContent = userMsgDiv.querySelector('.content');
+
+        appendTextSmoothly(userContent, text);
+
+        
+
+        // Ответ ИИ
+
+        const aiMsgDiv = appendMessage('ai', 'antiGemini');
+
+        const aiContent = aiMsgDiv.querySelector('.content');
+
+
+        try {
+
+            const response = await fetch('http://127.0.0.1:5000/api/chat', {
+
+                method: 'POST',
+
+                headers: { 'Content-Type': 'application/json' },
+
+                body: JSON.stringify({ message: text })
+
+            });
+
+
+            const reader = response.body.getReader();
+
+            const decoder = new TextDecoder();
+
+
+            while (true) {
+
+                const { done, value } = await reader.read();
+
+                if (done) break;
+
+                
+
+                const chunk = decoder.decode(value, { stream: true });
+
+                appendTextSmoothly(aiContent, chunk);
+
+                chat.scrollTop = chat.scrollHeight;
+
+            }
+
+        } catch (e) {
+
+            aiContent.innerHTML = "<span style='color:red'>[!] Ошибка связи с терминалом.</span>";
+
+        } finally {
+
+            input.disabled = false;
+
+            btn.disabled = false;
+
+            input.focus();
+
+            chat.scrollTop = chat.scrollHeight;
+
+        }
+
+    }
+
+
+    function appendMessage(role, label) {
+
+        const msg = document.createElement('div');
+
+        msg.className = `msg ${role}`;
+
+        msg.innerHTML = `<div class="meta">${label}</div><div class="content"></div>`;
+
+        chat.appendChild(msg);
+
+        chat.scrollTop = chat.scrollHeight;
+
+        return msg;
+
+    }
+
+
+    input.addEventListener("keypress", (e) => { if (e.key === "Enter") send(); });
+
+</script>
+
+
+</body>
+
+</html> 
