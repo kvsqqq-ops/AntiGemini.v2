@@ -6,7 +6,7 @@
 
     <meta charset="UTF-8">
 
-    <title>antiGemini // Terminal</title>
+    <title>AntiGemini</title>
 
     <style>
 
@@ -26,6 +26,9 @@
 
 
         body {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 
             background-color: var(--bg);
 
@@ -65,11 +68,32 @@
         }
 
 
-        .brand { color: var(--accent); font-weight: bold; letter-spacing: 3px; }
+.brand { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; /* Отступ между лого и текстом */
+    color: var(--accent); 
+    font-weight: bold; 
+    transition: 1.5s ease;
+    letter-spacing: 3px; 
+}
 
-        .status { font-size: 10px; color: #444; }
+.brand:hover {
+ gap: 25px
+}
 
+.brand-text {
+ transition: 1s ease;
+     display: inline-block;
+    cursor: pointer;
+}
 
+.brand-text:hover {
+   text-shadow: -2px -2px 2px rgba(255, 0, 0, 1);
+}
+
+        .status { font-size: 10px; color: #444; transition: 1s ease; }
+        .status:hover { font-size: 15px;}
         #chat-window {
 
             flex: 1;
@@ -85,6 +109,25 @@
             gap: 25px;
 
         }
+
+.logo {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+
+    transition-property: transform, width, height, filter;
+    transition-duration: 1.75s; /* уход (mouse leave) */
+    transition-timing-function: ease;
+}
+
+.logo:hover {
+    width: 45px;
+    height: 45px;
+    transform: rotate(-360deg);
+    filter: brightness(1.3);
+
+    transition-duration: 1s; /* наведение */
+}
 
 
         .msg { display: flex; flex-direction: column; }
@@ -117,47 +160,133 @@
 
         }
 
+/* Контейнер для блока кода */
+.code-block {
+    background: #000;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 15px;
+    margin: 15px 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    display: block;
+    position: relative;
+}
 
-        .ai .content { color: var(--text); border-left: 2px solid var(--accent); padding-left: 20px; }
+/* Название языка программирования */
+.code-lang {
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #1a1a1a;
+    padding-bottom: 5px;
+    user-select: none; /* Чтобы название языка не мешало при копировании кода */
+}
+
+/* Сам текст кода внутри блока */
+.code-content {
+    color: rgba(150, 0, 0, 1); /* Классический хакерский зеленый для кода */
+    white-space: pre;
+    display: block;
+    line-height: 1.5;
+}
+
+/* Стиль для жирного текста */
+.bold-text {
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 5px var(--accent);
+}
+
+.ai .content { 
+            color: var(--text); 
+            border-left: 2px solid var(--accent); 
+            padding-left: 20px; 
+            
+            /* Разрешаем выделение текста */
+            -webkit-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+
+            /* Сохраняем структуру (твои старые настройки) */
+            line-height: 1.6; 
+            font-size: 14px; 
+            padding-top: 10px;
+            padding-bottom: 10px;
+            white-space: pre-wrap; 
+            word-wrap: break-word;
+            word-break: break-word;
+        }
 
         .user .content { color: #666; text-align: right; padding-right: 20px; }
 
-/* --- АДАПТИВ ПОД ТЕЛЕФОНЫ --- */
-        @media (max-width: 768px) {
-            #chat-window {
-                padding: 20px 15px; /* Убираем огромные отступы 15% */
-                gap: 15px;
-            }
+/* 📱 Телефоны */
+@media (max-width: 768px) {
+    .content {
+        font-size: 17px;
+    }
 
-            .msg.user, .msg.ai {
-                width: 95%; /* Расширяем сообщения почти на весь экран */
-            }
+    input {
+        -webkit-user-select: text;
+        user-select: text
+        font-size: 17px;
+        padding: 16px;
+    }
 
-            footer {
-                padding: 15px; /* Уменьшаем отступы у поля ввода */
-            }
+    button {
+        width: 90px;
+        height: 55px;
+        font-size: 16px;
+    }
 
-            .content {
-                font-size: 13px; /* Чуть уменьшаем шрифт для компактности */
-            }
+    .search-toggle {
+        width: 55px;
+        height: 55px;
+    }
+}
 
-            header {
-                padding: 10px 15px;
-            }
+/* 📱 Планшеты */
+@media (max-width: 1024px) {
+    .content {
+        font-size: 15px;
+    }
 
-            .brand {
-                font-size: 14px;
-                letter-spacing: 1px;
-            }
+    input {
+        font-size: 15px;
+        padding: 14px;
+    }
 
-            /* Делаем кнопки побольше для удобного нажатия пальцем */
-            button {
-                padding: 0 15px;
-                font-size: 12px;
-            }
-        }
+    button {
+        width: 80px;
+        height: 50px;
+        font-size: 15px;
+    }
+}
 
-        /* --- АНИМАЦИЯ БУКВ --- */
+/* 📱 Маленькие телефоны */
+@media (max-width: 480px) {
+    .content {
+        font-size: 18px;
+    }
+
+    input {
+        font-size: 18px;
+        padding: 18px;
+    }
+
+    button {
+        width: 100px;
+        height: 60px;
+        font-size: 17px;
+    }
+
+    .search-toggle {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+      /* --- АНИМАЦИЯ БУКВ --- */
 
         @keyframes letterAppear {
 
@@ -246,35 +375,83 @@
 
         }
 
+button {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    cursor: pointer;
+    /* Делаем кнопку квадратной */
+    width: 75px; 
+    height: 45px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.4s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0; /* Убираем внутренние отступы */
+    flex-shrink: 0; /* Чтобы кнопка не сжималась */
+}
 
-        button {
+button:hover { 
+    background: var(--accent); 
+    color: #000; 
+    border-radius: 25px;
+}
 
-            background: transparent;
-
-            color: var(--accent);
-
-            border: 1px solid var(--accent);
-
-            cursor: pointer;
-
-            padding: 0 20px;
-
-            font-weight: bold;
-
-            transition: 0.2s;
-
-        }
-
-
-        button:hover { background: var(--accent); color: #000; }
-
-        button:disabled { opacity: 0.2; }
+button:disabled { 
+    opacity: 0.2; 
+    border-radius: 5px;
+    width: 65px; 
+    height: 35px;
+    margin: 0px 5px;
+}
 
 
         ::-webkit-scrollbar { width: 3px; }
 
         ::-webkit-scrollbar-thumb { background: var(--accent); }
 
+.search-toggle {
+    width: 45px;      /* Желаемый размер кнопки */
+    height: 45px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: 0.5s ease;
+    filter: grayscale(0.1);
+    opacity: 0.5;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Чтобы картинка не вылезала за края, если она больше */
+    border: 1px solid var(--border);
+    padding: 0;       /* Убираем все внутренние отступы */
+    background: transparent;
+}
+
+.search-toggle:hover {
+    opacity: 0.7;
+     box-shadow: 0 0 30px rgba(128, 0, 0, 1); 
+    border: 1px solid rgba(100, 0, 0, 1);
+}
+
+.search-toggle img {
+    width: 85%;      /* Картинка растягивается на всю ширину кнопки */
+    height: 85%;     /* И на всю высоту */
+    object-fit: cover; /* Важно: картинка заполнит всё пространство без искажений */
+}
+
+.search-toggle.active {
+    /* Твои настройки цвета */
+    opacity: 1;
+    box-shadow: 0 0 30px rgba(128, 0, 0, 1); 
+    border: 1px solid rgba(100, 0, 0, 1);
+    
+    /* Убираем серый фильтр и делаем фон чуть темнее для контраста */
+    filter: grayscale(0);
+    background: rgba(40, 0, 0, 1); 
+}
     </style>
 
 </head>
@@ -283,11 +460,11 @@
 
 
 <header>
-
-    <div class="brand">ANTI-GEMINI</div>
-
+    <div class="brand">
+        <img src="images/ico.png" alt="logo" class="logo">
+        <span class="brand-text">AntiGemini</span>
+    </div>
     <div class="status">Made by @mban153</div>
-
 </header>
 
 
@@ -295,166 +472,210 @@
 
 
 <footer>
-
-    <div class="input-wrap">
-
+    <div class="input-wrap" style="align-items: center;">
+        <div id="search-btn" class="search-toggle" onclick="toggleSearch()" title="Web Search">
+            <img src="/images/search.png" alt="S"> </div>
         <input type="text" id="user-input" placeholder="Enter prompt..." autocomplete="off">
-
-        <button id="send-btn" onclick="send()">Process</button>
-
+        <button id="send-btn" onclick="send()">Enter</button>
     </div>
-
 </footer>
 
 
 <script>
+let isSearchActive = false;
+const userInput = document.getElementById('user-input');
+const chatWindow = document.getElementById('chat-window');
+const sendBtn = document.getElementById('send-btn');
 
-    const input = document.getElementById('user-input');
+function toggleSearch() {
+    isSearchActive = !isSearchActive;
+    document.getElementById('search-btn').classList.toggle('active', isSearchActive);
+}
 
-    const chat = document.getElementById('chat-window');
+// --- АНИМАЦИЯ ---
+function createLetterElement(char) {
+    if (char === '\n') return document.createElement('br');
+    const span = document.createElement('span');
+    span.className = 'letter';
+    span.textContent = char;
+    return span;
+}
 
-    const btn = document.getElementById('send-btn');
+// --- СОЗДАНИЕ СООБЩЕНИЯ ---
+function appendMessage(role, label) {
+    const msg = document.createElement('div');
+    msg.className = `msg ${role}`;
+    msg.innerHTML = `<div class="meta">${label}</div><div class="content"></div>`;
+    chatWindow.appendChild(msg);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    return msg.querySelector('.content');
+}
 
-
-    // Создаем элемент буквы или перенос строки
-
-    function createLetterElement(char) {
-
-        if (char === '\n') {
-
-            return document.createElement('br');
-
-        }
-
-        const span = document.createElement('span');
-
-        span.className = 'letter';
-
-        span.textContent = char;
-
-        return span;
-
-    }
-
-
-    // Добавляем текст с учетом переносов
-
-    function appendTextSmoothly(container, text) {
-
-        for (let char of text) {
-
+// --- ПРОСТО ВЫВОД ТЕКСТА ---
+function appendText(container, text) {
+    text.split('').forEach((char, i) => {
+        setTimeout(() => {
             container.appendChild(createLetterElement(char));
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }, i * 3);
+    });
+}
 
-        }
+// --- ПАРСИНГ ``` ПОСЛЕ ОТВЕТА ---
+function parseMarkdown(container) {
+    const rawText = container.innerText;
 
-    }
+    container.innerHTML = '';
 
+    const parts = rawText.split("```");
 
-    async function send() {
-
-        const text = input.value.trim();
-
-        if (!text) return;
-
-
-        input.value = '';
-
-        input.disabled = true;
-
-        btn.disabled = true;
-
-
-        // Ваше сообщение
-
-        const userMsgDiv = appendMessage('user', 'YOU');
-
-        const userContent = userMsgDiv.querySelector('.content');
-
-        appendTextSmoothly(userContent, text);
-
-        
-
-        // Ответ ИИ
-
-        const aiMsgDiv = appendMessage('ai', 'antiGemini');
-
-        const aiContent = aiMsgDiv.querySelector('.content');
-
-
-        try {
-
-            const response = await fetch('http://127.0.0.1:5000/api/chat', {
-
-                method: 'POST',
-
-                headers: { 'Content-Type': 'application/json' },
-
-                body: JSON.stringify({ message: text })
-
+    parts.forEach((part, index) => {
+        // НЕ код
+        if (index % 2 === 0) {
+            part.split('\n').forEach((line, i) => {
+                container.appendChild(document.createTextNode(line));
+                if (i !== part.split('\n').length - 1) {
+                    container.appendChild(document.createElement('br'));
+                }
             });
+        }
+        // КОД
+        else {
+            const lines = part.split('\n');
+            const lang = lines.shift().trim();
+            const code = lines.join('\n');
 
+            const block = document.createElement('div');
+            block.className = 'code-block';
 
-            const reader = response.body.getReader();
+            const langEl = document.createElement('div');
+            langEl.className = 'code-lang';
+            langEl.textContent = lang || 'text';
 
-            const decoder = new TextDecoder();
+            const codeEl = document.createElement('pre');
+            codeEl.className = 'code-content';
+            codeEl.textContent = code;
 
+            block.appendChild(langEl);
+            block.appendChild(codeEl);
+            container.appendChild(block);
+        }
+    });
+}
 
-            while (true) {
+// --- ОТПРАВКА ---
+async function send() {
+    const text = userInput.value.trim();
+    if (!text) return;
 
-                const { done, value } = await reader.read();
+    userInput.value = '';
+    userInput.disabled = true;
+    sendBtn.disabled = true;
 
-                if (done) break;
+    // USER
+    const userContent = appendMessage('user', 'YOU');
+    appendText(userContent, text);
 
-                
+    // AI
+    const aiContent = appendMessage('ai', 'antiGemini');
 
-                const chunk = decoder.decode(value, { stream: true });
+    let fullResponse = '';
 
-                appendTextSmoothly(aiContent, chunk);
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: text,
+                use_search: isSearchActive
+            })
+        });
 
-                chat.scrollTop = chat.scrollHeight;
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
 
-            }
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-        } catch (e) {
+            const chunk = decoder.decode(value, { stream: true });
+            fullResponse += chunk;
 
-            aiContent.innerHTML = "<span style='color:red'>[!] Ошибка связи с терминалом.</span>";
-
-        } finally {
-
-            input.disabled = false;
-
-            btn.disabled = false;
-
-            input.focus();
-
-            chat.scrollTop = chat.scrollHeight;
-
+            appendText(aiContent, chunk);
         }
 
+        // 💥 ВАЖНО: после полного ответа — парсим
+        setTimeout(() => {
+            parseMarkdown(aiContent);
+        }, 50);
+
+    } catch (e) {
+        aiContent.innerHTML = "<span style='color:red'>[!] Terminal Connection Error.</span>";
+    } finally {
+        userInput.disabled = false;
+        sendBtn.disabled = false;
+        userInput.focus();
     }
+}
 
+userInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") send();
+});
 
-    function appendMessage(role, label) {
+const el = document.querySelector('.brand-text');
 
-        const msg = document.createElement('div');
+const originalText = el.textContent.trim();
+const targetText = "ANTIGEMINI";
 
-        msg.className = `msg ${role}`;
+let interval = null;
+let isAnimating = false;
 
-        msg.innerHTML = `<div class="meta">${label}</div><div class="content"></div>`;
+function animate(fromText, toText) {
+    clearInterval(interval);
+    isAnimating = true;
 
-        chat.appendChild(msg);
+    const maxLen = Math.max(fromText.length, toText.length);
+    let frame = 0;
 
-        chat.scrollTop = chat.scrollHeight;
+    interval = setInterval(() => {
+        let result = "";
 
-        return msg;
+        for (let i = 0; i < maxLen; i++) {
+            const fromChar = fromText[i] || "";
+            const toChar = toText[i] || "";
 
-    }
+            if (frame > i * 1.5) {
+                result += toChar;
+            } else {
+                result += fromChar;
+            }
+        }
 
+        el.textContent = result;
 
-    input.addEventListener("keypress", (e) => { if (e.key === "Enter") send(); });
+        frame++;
 
+        if (frame > maxLen * 2) {
+            clearInterval(interval);
+            el.textContent = toText;
+            isAnimating = false;
+        }
+
+    }, 40);
+}
+
+// hover → ANTIGEMINI
+el.addEventListener("mouseenter", () => {
+    if (isAnimating) clearInterval(interval);
+    animate(el.textContent, targetText);
+});
+
+// выход → обратно
+el.addEventListener("mouseleave", () => {
+    if (isAnimating) clearInterval(interval);
+    animate(el.textContent, originalText);
+});
 </script>
-
 
 </body>
 
