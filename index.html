@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
 
     <title>AntiGemini</title>
-
+    <link rel="icon" type="image/png" href="images/ico2.png">
     <style>
 
         :root {
@@ -93,7 +93,7 @@
 }
 
         .status { font-size: 10px; color: #444; transition: 1s ease; }
-        .status:hover { font-size: 15px;}
+        .status:hover { font-size: 11px;}
         #chat-window {
 
             flex: 1;
@@ -160,7 +160,7 @@
 
         }
 
-/* Контейнер для блока кода */
+/* Стиль для блока кода с логотипом */
 .code-block {
     background: #000;
     border: 1px solid var(--border);
@@ -170,22 +170,43 @@
     font-family: 'Consolas', 'Monaco', monospace;
     display: block;
     position: relative;
+       width: auto;  /* или любую другую ширину */
+    max-width: 100%; /* ограничение */
 }
 
-/* Название языка программирования */
+/* Верхняя часть блока кода (название + логотип) */
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #1a1a1a;
+    padding-bottom: 5px;
+}
+
 .code-lang {
     font-size: 10px;
     color: var(--accent);
     text-transform: uppercase;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #1a1a1a;
-    padding-bottom: 5px;
-    user-select: none; /* Чтобы название языка не мешало при копировании кода */
+    user-select: none;
 }
 
-/* Сам текст кода внутри блока */
+.code-logo {
+    margin-left: 100px; 
+    margin-bottom: 5px;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    transition: 1s ease;
+}
+
+.code-logo:hover {
+  transform: rotate(-360deg);
+      transition: 0.75s ease;
+}
+
 .code-content {
-    color: rgba(150, 0, 0, 1); /* Классический хакерский зеленый для кода */
+    color: rgba(150, 0, 0, 1);
     white-space: pre;
     display: block;
     line-height: 1.5;
@@ -464,7 +485,9 @@ button:disabled {
         <img src="images/ico.png" alt="logo" class="logo">
         <span class="brand-text">AntiGemini</span>
     </div>
+<a href="https://t.me/mban153" style="text-decoration: none; color: inherit;">
     <div class="status">Made by @mban153</div>
+</a>
 </header>
 
 
@@ -548,20 +571,54 @@ function parseMarkdown(container) {
             const block = document.createElement('div');
             block.className = 'code-block';
 
+            // Создаем контейнер для заголовка (название + лого)
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'code-header';
+
             const langEl = document.createElement('div');
             langEl.className = 'code-lang';
             langEl.textContent = lang || 'text';
+
+            // Проверяем язык и добавляем логотип
+            const codeLang = (lang || '').toLowerCase();
+            const logoImg = document.createElement('img');
+            logoImg.className = 'code-logo';
+
+            if (codeLang === 'python' || codeLang === 'py') {
+                logoImg.src = '/images/python.png';
+                logoImg.alt = 'Python';
+            } else if (codeLang === 'bash' || codeLang === 'sh' || codeLang === 'shell') {
+                logoImg.src = '/images/bash.png';
+                logoImg.alt = 'Bash';
+            } else if (codeLang === 'c' || codeLang === 'c lang') {
+                logoImg.src = '/images/c.png';
+                logoImg.alt = 'C';
+            } else if (codeLang === 'cpp' || codeLang === 'c++' || codeLang === 'cxx') {
+                logoImg.src = '/images/cpp.png';
+                logoImg.alt = 'C++';
+            } else if (codeLang === 'c#' || codeLang === 'csharp' || codeLang === 'cs') {
+                logoImg.src = '/images/csharp.png';
+                logoImg.alt = 'C#';
+            } else if (codeLang === 'html' || codeLang === 'htm') {
+                logoImg.src = '/images/html.png';
+                logoImg.alt = 'HTML';
+            } else {
+                logoImg.style.display = 'none';
+            }
+
+            headerDiv.appendChild(langEl);
+            headerDiv.appendChild(logoImg);
 
             const codeEl = document.createElement('pre');
             codeEl.className = 'code-content';
             codeEl.textContent = code;
 
-            block.appendChild(langEl);
+            block.appendChild(headerDiv);
             block.appendChild(codeEl);
             container.appendChild(block);
         }
     });
-}
+}	
 
 // --- ОТПРАВКА ---
 async function send() {
